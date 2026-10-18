@@ -557,4 +557,5 @@ try{
   setTimeout(()=>{if(!Music.running){EVTS.forEach(n=>document.addEventListener(n,firstTouch,true))}},300);
 }catch(e){}
 document.addEventListener('visibilitychange',()=>{if(!Music.on)return;if(document.hidden)Music.el.pause();else Music.el.play().catch(()=>{})});
-</script>
+</script><!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "bd373162423641bc810ca2f1c5953e5e"}'></script><!-- End Cloudflare Web Analytics -->
+

@@ -490,7 +490,9 @@ cLiving:"Salon & mutfak",cLounge:"Salon",cKitchen:"Mutfak",cBedroom:"Yatak odas�
 altHorn:"Süleymaniye Camii, Galata Köprüsü ve vapuruyla Haliç",altHero:"Yemek masalı salon ve açık mutfak",altView:"Haliç sahiline inen sokak",altFacade:"Bina cephesi",altLobby:"Oturma alanlı mermer lobi",altGarage:"Kapalı otopark girişi"}
 };
 let lang='en';
-try{const s=localStorage.getItem('gp-lang');if(s&&T[s])lang=s}catch(e){}
+// a language the visitor picked before wins; otherwise follow the device language
+try{const s=localStorage.getItem('gp-lang');if(s&&T[s])lang=s;else{const m={tr:'tr',de:'de',bs:'bs',hr:'bs',sr:'bs',sh:'bs',cnr:'bs'};
+  for(const d of (navigator.languages||[navigator.language||''])){const k=m[(d||'').toLowerCase().split('-')[0]];if(k){lang=k;break}if(/^en/i.test(d))break}}}catch(e){}
 
 const grid=document.getElementById('grid');
 PHOTOS.forEach(([f,c],i)=>{
@@ -554,8 +556,7 @@ sb.addEventListener('click',()=>{try{if(Music.on&&Music.running){Music.stop();us
 function firstTouch(e){if(sb.contains(e.target))return;off();if(!userTurnedOff&&!Music.running){try{Music.play();setBtnSoon()}catch(err){}}}
 const EVTS=['pointerdown','keydown','touchend'];
 function off(){EVTS.forEach(n=>document.removeEventListener(n,firstTouch,true))}
-// Some browsers block sound on a site the visitor has never used. Then a welcome screen asks for the language;
-// that one tap counts as an interaction, so the music starts with it.
+// Some browsers block sound until the visitor interacts; the music then starts with the first tap or key press.
 const gate=document.getElementById('gate');
 function showGate(){if(!gate.hidden||Music.running||userTurnedOff)return;
   document.getElementById('gateMark').innerHTML=document.querySelector('.bar .mark').innerHTML;
@@ -569,7 +570,7 @@ function showGate(){if(!gate.hidden||Music.running||userTurnedOff)return;
   gate.hidden=false;document.body.style.overflow='hidden';requestAnimationFrame(()=>requestAnimationFrame(()=>gate.classList.add('in')))}
 try{
   const p0=Music.play();setBtnSoon();
-  if(p0&&p0.catch)p0.catch(()=>{EVTS.forEach(n=>document.addEventListener(n,firstTouch,true));showGate()});
+  if(p0&&p0.catch)p0.catch(()=>{EVTS.forEach(n=>document.addEventListener(n,firstTouch,true))});
   setTimeout(()=>{if(!Music.running){EVTS.forEach(n=>document.addEventListener(n,firstTouch,true))}},300);
 }catch(e){}
 document.addEventListener('visibilitychange',()=>{if(!Music.on)return;if(document.hidden)Music.el.pause();else Music.el.play().catch(()=>{})});
